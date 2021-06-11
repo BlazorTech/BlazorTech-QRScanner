@@ -27,15 +27,12 @@ namespace BlazorTech.QRScanner
             moduleTask = new(() => jSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorTech.QRScanner/qr-scanner.umd.min.js").AsTask());
         }
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        protected override async Task OnInitializedAsync()
         {
-            if (firstRender)
-            {
-                var popperWrapper = await moduleTask.Value;
-                _qrScanner = await popperWrapper.InvokeAsync<IJSObjectReference>("createQrScanner", _videoElement, _qrScannerCallbackListnerRef, NonUniqueTimeout);
-                if(AutoStart)
-                    await StartCapturing();
-            }
+            var module = await moduleTask.Value;
+            _qrScanner = await module.InvokeAsync<IJSObjectReference>("createQrScanner", _videoElement, _qrScannerCallbackListnerRef, NonUniqueTimeout);
+            if(AutoStart)
+                await StartCapturing();
         }
 
         public async Task StartCapturing()
