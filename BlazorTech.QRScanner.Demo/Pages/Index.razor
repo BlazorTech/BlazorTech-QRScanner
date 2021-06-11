@@ -22,7 +22,7 @@ Welcome to your new app.
     async Task StartScanningByObject()
     {
         var popperWrapper = await JS.InvokeAsync<IJSInProcessObjectReference>("import", "./_content/BlazorTech.QRScanner/qr-scanner.umd.min.js");
-        var qrScanner = await JS.InvokeAsync<IJSObjectReference>("createQrScanner", "videoTest", "outputTest");
+        var qrScanner = await popperWrapper.InvokeAsync<IJSObjectReference>("createQrScanner", "videoTest", "outputTest");
         await qrScanner.InvokeVoidAsync("start");
     }
 }
