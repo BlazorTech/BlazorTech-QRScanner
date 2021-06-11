@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BlazorTech.QRScanner
 {
-    public partial class QRScanner : IDisposable
+    public partial class QRScanner : IAsyncDisposable
     {
         [Inject] protected IJSRuntime jSRuntime { get; set; }
 
@@ -45,9 +45,14 @@ namespace BlazorTech.QRScanner
             await _qrScanner.InvokeVoidAsync("stop");
         }
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
             _qrScannerCallbackListnerRef.Dispose();
+            if (moduleTask.IsValueCreated)
+            {
+                var module = await moduleTask.Value;
+                await module.DisposeAsync();
+            }
         }
 
         protected class QRScannerCallbackListner
