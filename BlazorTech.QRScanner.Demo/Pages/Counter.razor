@@ -2,19 +2,21 @@
 @inject ExampleJsInterop ExampleJsInterop
 <h1>Counter</h1>
 
-<p>Current count: @currentCount</p>
 <p>Current qr: @QR</p>
 
-<QRScanner OnScanReceived="SetString"/>
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+<QRScanner OnScanReceived="SetString" NonUniqueTimeout="1000" @ref="qrScanner" />
+<button class="btn btn-primary" @onclick="Stop2">Stop</button>
 
 @code {
     private int currentCount = 0;
     private string QR = string.Empty;
-    private async Task IncrementCount()
+
+    private QRScanner qrScanner { get; set; }
+
+    private async Task Stop2()
     {
-        currentCount++;
-        await ExampleJsInterop.Prompt("Wow!");
+        await qrScanner.StopCapturingAsync();
     }
 
     private void SetString(string qr)

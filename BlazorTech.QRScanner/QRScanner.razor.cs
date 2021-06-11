@@ -32,15 +32,15 @@ namespace BlazorTech.QRScanner
             var module = await moduleTask.Value;
             _qrScanner = await module.InvokeAsync<IJSObjectReference>("createQrScanner", _videoElement, _qrScannerCallbackListnerRef, NonUniqueTimeout);
             if(AutoStart)
-                await StartCapturing();
+                await StartCapturingAsync();
         }
 
-        public async Task StartCapturing()
+        public async Task StartCapturingAsync()
         {
             await _qrScanner.InvokeVoidAsync("start");
         }
 
-        public async Task StopCapturing()
+        public async Task StopCapturingAsync()
         {
             await _qrScanner.InvokeVoidAsync("stop");
         }
