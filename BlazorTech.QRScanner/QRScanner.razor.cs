@@ -11,15 +11,19 @@ namespace BlazorTech.QRScanner
     public partial class QRScanner
     {
         [Inject] protected IJSRuntime jSRuntime { get; set; }
-        private ElementReference _videoElement { get; set; }
 
-        [Parameter]
-        public EventCallback<string> OnScanReceived { get; set; }
+        [Parameter] public bool AutoStart { get; set; } = true;
+        [Parameter] public EventCallback<string> OnScanReceived { get; set; }
+        
+        
+        private IJSObjectReference _qrScanner { get; set; }
 
         private readonly Lazy<Task<IJSObjectReference>> moduleTask;
-        protected override Task OnInitializedAsync()
+        private ElementReference _videoElement { get; set; }
+
+        public QRScanner()
         {
-            return base.OnInitializedAsync();
+            moduleTask = new(() => jSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorTech.QRScanner/qr-scanner.umd.min.js").AsTask());
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -27,10 +31,21 @@ namespace BlazorTech.QRScanner
             if (firstRender)
             {
                 DotNetObjectReference<QRScanner> objRef = DotNetObjectReference.Create(this);
-                var popperWrapper = await jSRuntime.InvokeAsync<IJSInProcessObjectReference>("import", "./_content/BlazorTech.QRScanner/qr-scanner.umd.min.js");
-                var qrScanner = await popperWrapper.InvokeAsync<IJSObjectReference>("createQrScanner", _videoElement, objRef);
-                await qrScanner.InvokeVoidAsync("start");
+                var popperWrapper = await moduleTask.Value;
+                _qrScanner = await popperWrapper.InvokeAsync<IJSObjectReference>("createQrScanner", _videoElement, objRef);
+                if(AutoStart)
+                    await StartCapturing();
             }
+        }
+
+        public async Task StartCapturing()
+        {
+            await _qrScanner.InvokeVoidAsync("start");
+        }
+
+        public async Task StopCapturing()
+        {
+            await _qrScanner.InvokeVoidAsync("stop");
         }
 
         [JSInvokable("SendCodeAsync")]
