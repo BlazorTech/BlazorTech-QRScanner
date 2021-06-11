@@ -1,0 +1,18 @@
+﻿@page "/"
+@inject IJSRuntime JS
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+<video id="videoTest"></video>
+<div id="outputTest">Init</div>
+
+<button @onclick="StartScanning">Start scanning</button>
+
+@code{
+    async Task StartScanning()
+    {
+        await JS.InvokeVoidAsync("qeReaderTest", "videoTest", "outputTest");
+    }
+}
