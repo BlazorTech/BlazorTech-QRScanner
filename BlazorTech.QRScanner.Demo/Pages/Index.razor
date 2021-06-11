@@ -10,11 +10,19 @@ Welcome to your new app.
 </div>
 <div id="outputTest">Init</div>
 
-<button @onclick="StartScanning">Start scanning</button>
+<button @onclick="StartScanningByObject">Start scanning</button>
 
 @code{
     async Task StartScanning()
     {
-        await JS.InvokeVoidAsync("qeReaderTest", "videoTest", "outputTest");
+        var qrScanner = await JS.InvokeAsync<IJSObjectReference>("qeReaderTest", "videoTest", "outputTest");
+        var z = 1;
+    }
+
+    async Task StartScanningByObject()
+    {
+        var popperWrapper = await JS.InvokeAsync<IJSInProcessObjectReference>("import", "./_content/BlazorTech.QRScanner/qr-scanner.umd.min.js");
+        var qrScanner = await JS.InvokeAsync<IJSObjectReference>("createQrScanner", "videoTest", "outputTest");
+        await qrScanner.InvokeVoidAsync("start");
     }
 }
