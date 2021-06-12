@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31321.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorTech.QRScanner.Demo", "BlazorTech.QRScanner.Demo\BlazorTech.QRScanner.Demo.csproj", "{17FE1090-4317-45F5-834A-39F1EC8D009F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorTech.QRScanner", "BlazorTech.QRScanner\BlazorTech.QRScanner.csproj", "{93274D0A-92B7-4137-B413-BA8E954CCFC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorTech.QRScanner", "src\BlazorTech.QRScanner\BlazorTech.QRScanner.csproj", "{93274D0A-92B7-4137-B413-BA8E954CCFC5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
