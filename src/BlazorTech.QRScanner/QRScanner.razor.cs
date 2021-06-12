@@ -47,12 +47,14 @@ namespace BlazorTech.QRScanner
 
         public async ValueTask DisposeAsync()
         {
+            await _qrScanner.InvokeVoidAsync("destroy");
             _qrScannerCallbackListnerRef.Dispose();
             if (moduleTask.IsValueCreated)
             {
                 var module = await moduleTask.Value;
                 await module.DisposeAsync();
             }
+            _qrScanner = null;
         }
 
         protected class QRScannerCallbackListner
@@ -68,6 +70,5 @@ namespace BlazorTech.QRScanner
                 await _qrScanner.OnScanReceived.InvokeAsync(qr);
             }
         }
-        
     }
 }
