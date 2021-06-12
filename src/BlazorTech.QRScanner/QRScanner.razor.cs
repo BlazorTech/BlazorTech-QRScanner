@@ -12,8 +12,8 @@ namespace BlazorTech.QRScanner
         [Parameter] public bool AutoStart { get; set; } = true;
         [Parameter] public int NonUniqueTimeout { get; set; } = 0;
         [Parameter] public EventCallback<string> OnScanReceived { get; set; }
-        
-        
+        [Parameter] public RenderFragment CameraUnavailable { get; set; }
+
         private IJSObjectReference _qrScanner { get; set; }
         private ElementReference _videoElement { get; set; }
         
@@ -21,6 +21,7 @@ namespace BlazorTech.QRScanner
         private readonly DotNetObjectReference<QRScannerCallbackListner> _qrScannerCallbackListnerRef;
         private readonly Lazy<Task<IJSObjectReference>> moduleTask;
 
+        private bool _hasCameraOnInit = true;
         public QRScanner()
         {
             _qrScannerCallbackListnerRef = DotNetObjectReference.Create(new QRScannerCallbackListner(this));
@@ -29,10 +30,19 @@ namespace BlazorTech.QRScanner
 
         protected override async Task OnInitializedAsync()
         {
-            var module = await moduleTask.Value;
-            _qrScanner = await module.InvokeAsync<IJSObjectReference>("createQrScanner", _videoElement, _qrScannerCallbackListnerRef, NonUniqueTimeout);
-            if(AutoStart)
-                await StartCapturingAsync();
+            //To avoid exception when camera exist but access not allowed
+            try
+            {
+                var module = await moduleTask.Value;
+                _hasCameraOnInit = await module.InvokeAsync<bool>("deviceHasCamera");
+                _qrScanner = await module.InvokeAsync<IJSObjectReference>("createQrScanner", _videoElement, _qrScannerCallbackListnerRef, NonUniqueTimeout);
+                if (AutoStart && _hasCameraOnInit)
+                    await StartCapturingAsync();
+            }
+            catch (Exception)
+            {
+                _hasCameraOnInit = false;
+            }
         }
 
         public async Task StartCapturingAsync()

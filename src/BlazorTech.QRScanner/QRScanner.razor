@@ -1,1 +1,6 @@
-﻿<video style="width:100%;max-width:100%" @ref="_videoElement"></video>
+﻿@if (_hasCameraOnInit) {
+    <video style="width:100%;max-width:100%" @ref="_videoElement"></video>
+} else
+{
+    @CameraUnavailable
+}

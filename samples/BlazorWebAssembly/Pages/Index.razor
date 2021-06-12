@@ -1,0 +1,46 @@
+﻿@page "/"
+<div class=container-fluid>
+    <div class="row">
+        <div class="col-12 col-lg-9">
+            <h1>QR Scanner</h1>
+            <p style="word-break:break-word">Last scannded QR: @lastQr</p>
+            <QRScanner OnScanReceived="SetString" NonUniqueTimeout="1000" @ref="qrScanner">
+                <CameraUnavailable>
+                    <div>Camera unavilable</div>
+                </CameraUnavailable>
+            </QRScanner>
+            <button class="btn btn-primary" @onclick="StartAsync">Start</button>
+            <button class="btn btn-primary" @onclick="StopAsync">Stop</button>
+        </div>
+        <div class="col-12 col-lg-3" style="word-break:break-word">
+            <h2>All scanned QR</h2>
+            @foreach (var qr in allQrs)
+            {
+                <div>@qr</div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private string lastQr = string.Empty;
+    private List<string> allQrs = new List<string>();
+
+    private QRScanner qrScanner { get; set; }
+
+    private async Task StartAsync()
+    {
+        await qrScanner.StartCapturingAsync();
+    }
+
+    private async Task StopAsync()
+    {
+        await qrScanner.StopCapturingAsync();
+    }
+
+    private void SetString(string qr)
+    {
+        lastQr = $"{qr} (at {DateTime.Now.ToString("T")})";
+        allQrs.Insert(0, qr);
+    }
+}
