@@ -21,10 +21,10 @@ jobs:
 
     # publishes Blazor project to the release-folder
     - name: Publish .NET Core Project
-      run: dotnet publish BlazorTech.QRScanner.Demo/BlazorTech.QRScanner.Demo.csproj -c Release -o release --nologo
+      run: dotnet publish samples/BlazorWebAssembly/BlazorWebAssembly.csproj -c Release -o release --nologo
     
     # changes the base-tag in index.html from '/' to 'BlazorWasmTesm5' to match GitHub Pages repository subdirectory
-    - name: Change base-tag in index.html from / to FAF-Analytics
+    - name: Change base-tag in index.html from / to QRScanner
       run: sed -i 's/<base href="\/" \/>/<base href="\/QRScanner\/" \/>/g' release/wwwroot/index.html
     
     # copy index.html to 404.html to serve the same file when a file is not found
